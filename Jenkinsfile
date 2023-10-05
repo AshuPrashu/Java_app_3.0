@@ -35,15 +35,7 @@ pipeline{
             }
         }
 
-    stage('Push JAR to JFrog:python'){
-         when { expression {  params.action == 'create' } }
-            steps{
-               script{
-                   
-                   jarPush()
-               }
-            }
-        }        
+   
          stage('Integration Test maven'){
          when { expression {  params.action == 'create' } }
             steps{
@@ -82,6 +74,15 @@ pipeline{
                }
             }
         }
+        stage('Push JAR to JFrog'){
+         when { expression {  params.action == 'create' } }
+            steps{
+               script{
+                   
+                   jarPush()
+               }
+            }
+        }        
         stage('Docker Image Build'){
          when { expression {  params.action == 'create' } }
             steps{
