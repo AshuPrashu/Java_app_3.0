@@ -1,32 +1,24 @@
 import requests
+import subprocess
 
-def upload_jar_to_artifactory(repo_url, jar_file_path, username, password):
-    upload_url = f"{repo_url}/{jar_file_path}"
+def jfrogupload():
+    # Define the URL, file path and authentication credentials
+    url = "http://13.52.251.141:8082/artifactory/example-repo-local/kubernetes-configmap-reload-0.0.1-SNAPSHOT.jar"
+    file_path = "/var/lib/jenkins/workspace/job1/target/kubernetes-configmap-reload-0.0.1-SNAPSHOT.jar"
+    username = 'admin'
+    password = 'Password123'
     
-    # Read the JAR file
-    with open(jar_file_path, 'rb') as jar_file:
-        jar_content = jar_file.read()
-
-    # Set the headers for the POST request
-    headers = {
-        'Content-Type': 'application/java-archive',
-    }
-
-    # Send the POST request to upload the JAR file
-    response = requests.put(upload_url, data=jar_content, auth=(username, password), headers=headers)
-
-    # Check the response status
+    #send the PUT request with authentication and file upload
+    with open(file_path, 'rb') as file:
+        response = requests.put(url, auth=(username, password), data=file)
+        
+    #check the response status code
     if response.status_code == 201:
-        print('JAR file uploaded successfully.')
+        print("\nPUT request was sucessful!")
     else:
-        print(f'Failed to upload JAR file. Status code: {response.status_code}')
-        print(f'Response content: {response.text}')
-
-
-# Replace with your Artifactory repository URL, JAR file path, username, and password
-repository_url = 'http://52.53.218.227:8082/artifactory/example-repo-local/kubernetes-configmap-reload-0.0.1-SNAPSHOT.jar'
-jar_file_path = 'example-repo-local/kubernetes-configmap-reload-0.0.1-SNAPSHOT.jar'
-username = 'admin'
-password = 'Password@123'
-# Upload the JAR file to the Artifactory repository
-#upload_jar_to_artifactory(repository_url, jar_file_path, username, password)
+        print(f"PUT request failed with status code {response.status_code}")
+        print("Response content:")
+        print("response.text")
+        
+def main():
+    jfrogupload()
